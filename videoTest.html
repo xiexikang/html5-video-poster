@@ -71,10 +71,10 @@
         function vidplaySate(e) {
             if (video.paused) {
                 video.play();
-                playBtn.setAttribute('class','btn pause');
+                playBtn.classList.add('pause');
             } else {
                 video.pause();
-                playBtn.setAttribute('class','btn');
+                playBtn.classList.remove('pause');
             }
         }
         //点击监听
@@ -82,7 +82,7 @@
         playBtn.addEventListener('click', vidplaySate, false);
         //结束监听
         video.addEventListener('ended',function () {
-            playBtn.setAttribute('class','btn play-btn');
+            playBtn.classList.remove('pause');
         });
     };
     //视频：
