@@ -11,22 +11,42 @@
     <meta name="x5-fullscreen" content="true" >
     <meta name="browsermode" content="application" >
     <meta name="x5-page-mode" content="app" >
-    <title>视频poster测试</title>
+    <title>视频video应用</title>
+    <style>
+        .video-con{ width: 300px; height: 150px; position: relative; margin-bottom: 20px;}
+        .video-con .video{ width: 100%; height: 100%;}
+        .video-con .btn{ width: 64px; height: 64px; background: transparent url("play-btn.png") no-repeat;
+            position: absolute; left: 50%; top: 50%; transform: translate(-50%,-50%); border: none;
+        }
+        .video-con .btn.pause{ background-image: url("pause-btn.png");}
+    </style>
 </head>
+
 <body>
-<video class="video" controls="controls" poster="">
-    <source src="1.mp4" >
-</video>
-<video class="video" controls="controls" poster="">
-    <source src="2.mp4" >
-</video>
+
+<h1>视频video应用：截取封面图；监听播放状态</h1>
+
+<div class="video-con">
+    <video class="video"  poster="">
+        <source src="1.mp4" >
+    </video>
+    <button type="button" class="btn js-play-btn"></button>
+</div>
+
+<div class="video-con">
+    <video class="video" poster="">
+        <source src="2.mp4" >
+    </video>
+    <button type="button" class="btn js-play-btn"></button>
+</div>
 
 
-<!--video截图遍历到对应的video的poster封面图上-->
+<!--html5的video-->
 <script type="text/javascript">
-    // 设置poster属性
-    const setPoster = function(video, scale = 0.8) {
-        video.addEventListener('loadeddata', function(event) {
+    // 视频------视频截图 ~~ 视频播放状态 ~~
+    const setMedia = function(video, scale = 0.8) {
+        // 设置poster属性：（非本地视频资源会有跨域截图问题）
+        video.addEventListener('loadeddata', function(e) {
             // 拿到图片
             let canvas = document.createElement('canvas');
             canvas.width = video.videoWidth * scale;
@@ -43,10 +63,32 @@
             // 设置属性
             video.setAttribute('poster', src);
         });
+// -------------------------------------------------------------------------------------
+        //检测视频播放状态：
+        //播放按钮
+        let playBtn =  video.parentNode.childNodes[2].nextSibling;
+        //设置状态
+        function vidplaySate(e) {
+            if (video.paused) {
+                video.play();
+                playBtn.setAttribute('class','btn pause');
+            } else {
+                video.pause();
+                playBtn.setAttribute('class','btn');
+            }
+        }
+        //点击监听
+        video.addEventListener('click', vidplaySate, false);
+        playBtn.addEventListener('click', vidplaySate, false);
+        //结束监听
+        video.addEventListener('ended',function () {
+            playBtn.setAttribute('class','btn play-btn');
+        });
     };
+    //视频：
     let videos = document.querySelectorAll('video');
     videos.forEach((video) => {
-        setPoster(video);
+        setMedia(video);
     });
 
 </script>
