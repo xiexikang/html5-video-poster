@@ -34,7 +34,7 @@
 </div>
 
 <div class="video-con">
-    <video class="video" poster="">
+    <video class="video" poster="" >
         <source src="2.mp4" >
     </video>
     <button type="button" class="btn js-play-btn"></button>
@@ -44,26 +44,33 @@
 <!--html5的video-->
 <script type="text/javascript">
     // 视频------视频截图 ~~ 视频播放状态 ~~
-    const setMedia = function(video, scale = 0.8) {
+    const setMedia = (video, scale = 0.8)=> {
         // 设置poster属性：（非本地视频资源会有跨域截图问题）
-        video.addEventListener('loadeddata', function(e) {
-            // 拿到图片
-            let canvas = document.createElement('canvas');
-            canvas.width = video.videoWidth * scale;
-            canvas.height = video.videoHeight * scale;
-            canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
-            let src = canvas.toDataURL('image/png');
-            // 显示在dom，测试用
-            (function(flag = true) {
-                if (!flag) {return;}
-                let img = document.createElement('img');
-                img.src = src;
-                document.body.appendChild(img);
-            })(0);
-            // 设置属性
-            video.setAttribute('poster', src);
+        video.addEventListener('loadeddata', (e)=> {
+            setTimeout(()=>{
+                // 拿到图片
+                let canvas = document.createElement('canvas'),
+                    ctx = canvas.getContext("2d");
+                canvas.width = video.videoWidth * scale;
+                canvas.height = video.videoHeight * scale;
+                ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+                let src = canvas.toDataURL('image/png');
+                // 设置属性
+                video.setAttribute('poster', src);
+
+                // 显示在dom，测试用
+                (function(flag = true) {
+                    // if (!flag) {
+                    //     return;
+                    // }
+                    let img = document.createElement('img');
+                    img.src = src;
+                    document.body.appendChild(img);
+                })(0);
+
+            },.5e3);
         });
-// -------------------------------------------------------------------------------------
+
         //检测视频播放状态：
         //播放按钮
         let playBtn =  video.parentNode.childNodes[2].nextSibling;
@@ -81,7 +88,7 @@
         video.addEventListener('click', vidplaySate, false);
         playBtn.addEventListener('click', vidplaySate, false);
         //结束监听
-        video.addEventListener('ended',function () {
+        video.addEventListener('ended',()=> {
             playBtn.classList.remove('pause');
         });
     };
